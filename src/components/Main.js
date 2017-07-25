@@ -3,15 +3,26 @@ require('styles/App.css');
 
 import React from 'react';
 
-let yeomanImage = require('../images/yeoman.png');
+//let yeomanImage = require('../images/yeoman.png');
+//获取图片元数据
+let imageInfoList = require('../data/imgDescInfo.json');
+//生成图片的url
+imageInfoList = (function (imageInfoArr){
+    imageInfoArr.forEach(function(element) {
+      element.imageUrl = require('../images/' + element.fileName);
+    }, this);
+}(imageInfoList));
+
 
 class AppComponent extends React.Component {
   render() {
     return (
-      <div className="index">
-        <img src={yeomanImage} alt="Yeoman Generator" />
-        <div className="notice">Hello!</div>
-      </div>
+      <section className="stage">
+        <section className="img-sec">
+        </section>
+        <nav className="controller-nav">
+        </nav>
+      </section>
     );
   }
 }
