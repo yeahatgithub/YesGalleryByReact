@@ -13,11 +13,13 @@ module.exports = {
   additionalPaths: additionalPaths,
   port: defaultSettings.port,
   debug: true,
-  devtool: 'eval',
+  //devtool: 'eval',
+  devtool: 'source-map',
   output: {
     path: path.join(__dirname, '/../dist/assets'),
     filename: 'app.js',
-    publicPath: defaultSettings.publicPath
+    publicPath: defaultSettings.publicPath,
+    devtoolModuleFilenameTemplate: info =>`webpack:///${info.resourcePath}`
   },
   devServer: {
     contentBase: './src/',
