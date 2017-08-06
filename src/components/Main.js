@@ -28,6 +28,17 @@ class ImgFigure extends React.Component {
       isFlipped: false
     };
   }
+
+  onClick() {
+    if (this.props.center) {
+      this.setState({
+        isFlipped: !this.state.isFlipped
+      });
+    } else {
+      this.props.gotoCenter();
+    }
+  }
+
   flip() {
     this.setState({
       isFlipped: !this.state.isFlipped
@@ -54,7 +65,7 @@ class ImgFigure extends React.Component {
     
     return (
             /* .img-figure样式设定position=absolute，才能使得style属性中的left, top起效 */
-      <figure className={figureClassName} style={styleValue} onClick={this.flip.bind(this)}>
+      <figure className={figureClassName} style={styleValue} onClick={this.onClick.bind(this)}>
         <img src={this.props.imgInfo.imageUrl} alt={this.props.imgInfo.title} />
         <figcaption>
           <h2 className="img-title">{this.props.imgInfo.title}</h2>
@@ -70,7 +81,10 @@ class ImgFigure extends React.Component {
 class AppComponent extends React.Component {
   constructor(props) {
     super(props);
-    this.state = {imagesInfo: imageInfoList};   //用(class...extends...)定义组件时，这是定义组件状态变量的写法。
+    this.state = {
+      imagesInfo: imageInfoList,
+      center_img_index: 8     //居中图片的编号
+    };   //用(class...extends...)定义组件时，这是定义组件状态变量的写法。
   }
 
 /*   getInitialState() {    //用React.createClass定义组件时，用getInitialState定义组件状态变量
@@ -95,7 +109,8 @@ class AppComponent extends React.Component {
       //singleImageInfo.top = index * 10;
       //singleImageInfo.position = calcRandomPosition(0, 0, stage.width, stage.height);   //需要在componentDidMount生命周期函数内来计算图片的位置
       //singleImageInfo.position = {left: 0, top: 0};
-      imgFigures.push(<ImgFigure imgInfo={singleImageInfo} key={index}/>);
+      var centerOrNot = index == this.state.center_img_index;
+      imgFigures.push(<ImgFigure imgInfo={singleImageInfo} key={index} center={centerOrNot} gotoCenter={this.gotoCenter(index)}/>);
     }, this);
 
 
@@ -112,21 +127,25 @@ class AppComponent extends React.Component {
   }
 
   componentDidMount() {
+    this.arrangeImagesInWidow(this.state.center_img_index);
+  }
+
+  arrangeImagesInWidow(center_img_index) {
     var stageDomNode = findDOMNode(this.refs.stage);
 
     var stageWidth = stageDomNode.scrollWidth;
     var stageHeight = stageDomNode.scrollHeight;
     //console.log('AppComponent.componentDidMount(), (stageWidth, stageHeight)=', stageWidth, stageHeight);
 
-    this.arrangeImages(0, 0, stageWidth, stageHeight);
+    this.arrangeImages(0, 0, stageWidth, stageHeight, center_img_index);
   }
 
-  arrangeImages(x_low, y_low, x_high, y_high) {
+  arrangeImages(x_low, y_low, x_high, y_high, center_img_index) {
 /*     imageInfoList.forEach(function(singleImageInfo, index){
       singleImageInfo.position = this.calcRandomPosition(x_low, y_low, x_high, y_high);
       //imageInfoList[index].position = this.calcRandomPosition(x_low, y_low, x_high, y_high);
     }, this); */
-    this.setImagesPostion(x_low, y_low, x_high, y_high, 8);    
+    this.setImagesPostion(x_low, y_low, x_high, y_high, center_img_index);    
     //console.log('AppComponent.arrangeImages(), imageInfoList=', imageInfoList);
     this.setState({
       imagesInfo: imageInfoList
@@ -136,6 +155,7 @@ class AppComponent extends React.Component {
   //设定所有图片的坐标位置
   // @param center_img_index: 处于中心位置的图片的下标（数组中的下标）
   setImagesPostion(x_low, y_low, x_high, y_high, center_img_index) {
+    console.log("setImagePosition(), center_img_index=", center_img_index);
     var halfImageWidth = Math.floor(IMAGE_WIDTH / 2);
     //中心点
     var center_x = Math.floor(x_low + (x_high - x_low) / 2);
@@ -188,6 +208,18 @@ class AppComponent extends React.Component {
       return -deg;
     else
       return deg;
+  }
+
+  //把图片调到窗口中心
+  gotoCenter(index) {
+    //return function(index) {  //错误的写法，这要求调用闭包函数的时候传入参数。这里，是想把index作为执行环境变量，供闭包函数使用。
+    return function() {
+      //console.log("AppComponent.gotoCenter(), center_img_index=", index);
+      this.setState({
+        center_img_index: index
+      })
+      this.arrangeImagesInWidow(index);
+    }.bind(this);
   }
 }
 
