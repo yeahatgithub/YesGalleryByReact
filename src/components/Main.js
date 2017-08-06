@@ -83,8 +83,8 @@ class AppComponent extends React.Component {
     super(props);
     this.state = {
       imagesInfo: imageInfoList,
-      center_img_index: 8     //居中图片的编号
     };   //用(class...extends...)定义组件时，这是定义组件状态变量的写法。
+    this.center_img_index = 8;    //居中图片的编号
   }
 
 /*   getInitialState() {    //用React.createClass定义组件时，用getInitialState定义组件状态变量
@@ -109,7 +109,7 @@ class AppComponent extends React.Component {
       //singleImageInfo.top = index * 10;
       //singleImageInfo.position = calcRandomPosition(0, 0, stage.width, stage.height);   //需要在componentDidMount生命周期函数内来计算图片的位置
       //singleImageInfo.position = {left: 0, top: 0};
-      var centerOrNot = index == this.state.center_img_index;
+      var centerOrNot = index == this.center_img_index;
       imgFigures.push(<ImgFigure imgInfo={singleImageInfo} key={index} center={centerOrNot} gotoCenter={this.gotoCenter(index)}/>);
     }, this);
 
@@ -127,10 +127,11 @@ class AppComponent extends React.Component {
   }
 
   componentDidMount() {
-    this.arrangeImagesInWidow(this.state.center_img_index);
+    this.arrangeImagesInWidow(this.center_img_index);
   }
 
   arrangeImagesInWidow(center_img_index) {
+    this.center_img_index = center_img_index;
     var stageDomNode = findDOMNode(this.refs.stage);
 
     var stageWidth = stageDomNode.scrollWidth;
@@ -179,6 +180,8 @@ class AppComponent extends React.Component {
       left: center_x - halfImageWidth,
       top: center_y - halfImageWidth
     };
+    imageInfoList[center_img_index].rotate = 0;
+
     //左侧图片
     for (var i = 0; i < imageInfoList.length / 2; i++) {
       if (i == center_img_index) continue;
@@ -215,9 +218,6 @@ class AppComponent extends React.Component {
     //return function(index) {  //错误的写法，这要求调用闭包函数的时候传入参数。这里，是想把index作为执行环境变量，供闭包函数使用。
     return function() {
       //console.log("AppComponent.gotoCenter(), center_img_index=", index);
-      this.setState({
-        center_img_index: index
-      })
       this.arrangeImagesInWidow(index);
     }.bind(this);
   }
