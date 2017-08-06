@@ -76,7 +76,7 @@ var ImgFigure = React.createClass({
 
         var imgFigureClassName = 'img-figure';
             imgFigureClassName += this.props.arrange.isInverse ? ' is-inverse' : '';
-
+            //加了is-inverse类别，造成figure翻转。"Div.img-back"背面原来是翻转的，就变正面了。
         return (
             <figure className={imgFigureClassName} style={styleObj} onClick={this.handleClick}>
                 <img src={this.props.data.imageURL}

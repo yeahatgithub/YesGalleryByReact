@@ -46,13 +46,51 @@ body {
       margin: 0;
       padding: 40px;
       background-color: #fff;
-      box-sizing: border-box;
+      box-sizing: border-box;   //把padding计算在盒子占用区域内
+      cursor: pointer;    //鼠标指向目标时，变成手形
+      transform-origin: 0 50% 0;  //变形的原点(x, y, z)。
+        //这里，原点在左边界的中点，用作旋转轴心点.2D旋转时，该点用作锚点。下面提到的3D旋转时围绕经过该点的Y轴旋转。
+      transform-style: preserve-3d;   //保留3D旋转后的位置。
+      transition: transform 0.6s ease-in-out, left 0.6s ease-in-out, top 0.6s ease-in-out;
+        //transition是（动画）过渡效果。transform, left, top是要启用过渡效果的属性。0.6s是过渡效果的用时。
+        //ease-in-out指的是慢速进入，慢速退出。
+      &.is-flipped {
+        transform: translate(320px) rotateY(180deg);  //translate是平移，一个参数指的是水平方向。
+          //rotateY()是3D旋转.围绕经过原点的Y轴旋转。
+      }
     }
 
     figcaption {
       text-align: center;
       color: #a7a0a2;
       font-size: 16px;
+
+      .img-back {
+        position: absolute;
+        top: 0;   //基于父元素来定位
+        left: 0;
+
+        width: 100%;
+        height: 100%;
+        padding: 50px 40px;
+        overflow: auto;
+
+        color: #a7a0a2;
+        font-size: 22px;
+        line-height: 1.25;
+        text-align: left;
+
+        background-color: #fff;
+
+        box-sizing: border-box;
+        transform: rotateY(180deg) translateZ(1px);  //translateZ(): 在z轴上平移。rotateY():绕着经过原点的Y轴旋转。
+          //rotateY(180deg)，造成该类别元素背对屏幕
+        backface-visibility: hidden;    //背对屏幕时不可见
+
+        p {
+          margin: 0;
+        }
+      }
     }
   }
 }
