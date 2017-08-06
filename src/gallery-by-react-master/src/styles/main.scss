@@ -47,7 +47,7 @@ html, body {
 
             background-color: #fff;
 
-            box-sizing: border-box;
+            box-sizing: border-box;  //把padding计算在内
             cursor: pointer;
             transform-origin: 0 50% 0;   //变形原点（如旋转操作的轴心点）。这里是左边界的中心点。
             transform-style: preserve-3d;  //元素将保留其 3D 位置。
@@ -87,8 +87,9 @@ html, body {
               background-color: #fff;
 
               box-sizing: border-box;
-              transform: rotateY(180deg) translateZ(1px);  //translateZ(): 在z轴上平移。rotateY():沿着经过原点的Y轴旋转。
-              backface-visibility: hidden;    //不面向屏幕时不可见
+              transform: rotateY(180deg) translateZ(1px);  //translateZ(): 在z轴上平移。rotateY():绕着经过原点的Y轴旋转。
+                //rotateY(180deg)，造成该类别元素背对屏幕
+              backface-visibility: hidden;    //背对屏幕时不可见
 
               p {
                 margin: 0;

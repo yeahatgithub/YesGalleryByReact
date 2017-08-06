@@ -14,7 +14,7 @@ imageInfoList = (function (imageInfoArr){
       element.imageUrl = require('../images/' + element.fileName);
       element.position = {left: 0, top: 0};
       element.rotate = 0;   //旋转角度
-      element.isFlipped = false;  //是否翻到背面了？
+      //element.isFlipped = false;  //是否翻到背面了？
     }, this);
 
     return imageInfoArr;
@@ -23,13 +23,14 @@ imageInfoList = (function (imageInfoArr){
 class ImgFigure extends React.Component {
   constructor(props) {
     super(props);
-    this.state ={figureInfo: props.imgInfo };
+    this.state ={
+      figureInfo: props.imgInfo,
+      isFlipped: false
+    };
   }
   flip() {
-    var figInfo = this.state.figureInfo;
-    figInfo.isFlipped = !figInfo.isFlipped;
     this.setState({
-      figureInfo: figInfo
+      isFlipped: !this.state.isFlipped
     })
   }
 
@@ -47,7 +48,7 @@ class ImgFigure extends React.Component {
 
     //var figureClassName = "img-figure is-flipped";  //测试App.scss中实现的图片翻转效果是否出得来。测试成功。
     var figureClassName = 'img-figure';
-    if (this.props.imgInfo.isFlipped) {
+    if (this.state.isFlipped) {
       figureClassName += ' ' + 'is-flipped';
     } 
     
@@ -75,6 +76,13 @@ class AppComponent extends React.Component {
 /*   getInitialState() {    //用React.createClass定义组件时，用getInitialState定义组件状态变量
     return {imagesInfo: imageInfoList};
   } */
+
+  onClickImage(event) {
+
+
+    event.preventDefault();
+    event.stopPropagation();
+  }
 
   render() {
     var controllerUnits = [];
